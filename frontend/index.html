@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smart Device Runtime UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="hero">
+        <p class="kicker">SmartHome</p>
+        <h1 id="formTitle">Loading...</h1>
+        <p id="formDescription" class="subtitle"></p>
+      </header>
+
+      <section class="status-panel">
+        <div>
+          <p class="status-label">Device</p>
+          <p id="deviceIdText">-</p>
+        </div>
+        <div>
+          <p class="status-label">Last Seen</p>
+          <p id="lastSeenText">-</p>
+        </div>
+        <div>
+          <p class="status-label">State</p>
+          <p id="stateText">-</p>
+        </div>
+      </section>
+
+      <section id="formRoot" class="form-grid"></section>
+      <p id="toast" class="toast hidden"></p>
+    </main>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
