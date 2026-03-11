@@ -39,10 +39,12 @@ TimerType timers[6] = {
   timer_create_default(), timer_create_default(), timer_create_default(),
   timer_create_default(), timer_create_default(), timer_create_default()
 };
+TimerType localTimer = timer_create_default();
 
 uint8_t durationMinutes[5] = {0, 0, 0, 0, 0};   // duration byte1..byte5
 bool timerState[5] = {false, false, false, false, false};  // per-pin timer running
 uint8_t lastRawState[6] = {255, 255, 255, 255, 255, 255};
+bool pinOn[5] = {false, false, false, false, false};
 
 struct DeviceConfig {
   uint32_t magic;
@@ -150,11 +152,59 @@ String renderConfigPage(const String& message) {
 }
 
 void writePin(uint8_t index, bool on) {
+  pinOn[index] = on;
   if (RELAY_ACTIVE_LOW) {
     digitalWrite(RELAY_PINS[index], on ? LOW : HIGH);
   } else {
     digitalWrite(RELAY_PINS[index], on ? HIGH : LOW);
   }
+}
+
+int pinIndexFromNumber(int pinNumber) {
+  for (int i = 0; i < 5; i++) {
+    if (RELAY_PINS[i] == pinNumber) return i;
+  }
+  return -1;
+}
+
+uint8_t buildByte0() {
+  uint8_t state = 0;
+  for (uint8_t i = 0; i < 5; i++) {
+    if (pinOn[i]) state |= (1 << i);
+  }
+  return state;
+}
+
+bool postLocalState() {
+  String url = buildApiUrl(String("/api/devices/") + config.deviceId + "/state");
+  HTTPClient http;
+
+  String payload = "{";
+  payload += "\"byte0\":" + String(buildByte0());
+  payload += ",\"durationBytes\":{";
+  payload += "\"byte1\":" + String(durationMinutes[0]) + ",";
+  payload += "\"byte2\":" + String(durationMinutes[1]) + ",";
+  payload += "\"byte3\":" + String(durationMinutes[2]) + ",";
+  payload += "\"byte4\":" + String(durationMinutes[3]) + ",";
+  payload += "\"byte5\":" + String(durationMinutes[4]);
+  payload += "}}";
+
+  if (url.startsWith("https://")) {
+    std::unique_ptr<BearSSL::WiFiClientSecure> client(new BearSSL::WiFiClientSecure);
+    client->setInsecure();
+    if (!http.begin(*client, url)) return false;
+    http.addHeader("Content-Type", "application/json");
+    int code = http.POST(payload);
+    http.end();
+    return code >= 200 && code < 300;
+  }
+
+  WiFiClient client;
+  if (!http.begin(client, url)) return false;
+  http.addHeader("Content-Type", "application/json");
+  int code = http.POST(payload);
+  http.end();
+  return code >= 200 && code < 300;
 }
 
 String buildApiUrl(const String& path) {
@@ -229,6 +279,16 @@ bool handlePinExpired(uint8_t pinIndex) {
   return false;
 }
 
+bool handleLocalKettleExpired(void*) {
+  const uint8_t idx = 1; // D2
+  writePin(idx, false);
+  durationMinutes[idx] = 0;
+  timerState[idx] = false;
+  timers[idx + 1].cancel();
+  postPinExpired(idx);
+  return false;
+}
+
 void applyRawState(const uint8_t raw[6]) {
   if (memcmp(lastRawState, raw, 6) == 0) return;
   for (uint8_t i = 0; i < 6; i++) lastRawState[i] = raw[i];
@@ -278,12 +338,35 @@ bool pollTimerCallback(void*) {
 
 String renderPage() {
   String html;
-  html.reserve(1600);
+  html.reserve(2600);
   html += "<!doctype html><html><head><meta charset='utf-8'>";
   html += "<meta name='viewport' content='width=device-width,initial-scale=1'>";
-  html += "<title>HOME_LIGHT_CONTROL</title></head><body>";
-  html += "<h2>HOME_LIGHT_CONTROL</h2>";
+  html += "<title>CLASSIC HOUSE CONTROL</title>";
+  html += "<style>";
+  html += "body{font-family:Arial,sans-serif;background:#eef4f4;margin:0;padding:18px;}";
+  html += ".card{max-width:720px;margin:0 auto;background:#fff;border-radius:14px;padding:18px;";
+  html += "box-shadow:0 8px 24px rgba(0,0,0,.08);} ";
+  html += ".grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}";
+  html += "button{border:none;border-radius:7px;padding:7px 7px;font-weight:700;cursor:pointer;width:200px;}";
+  html += ".btn-on{background:#0a9f6f;color:#fff;}.btn-off{background:#e0e0e0;}";
+  html += ".btn-warn{background:#ffb74d;color:#1b1b1b;}";
+  html += ".meta{color:#666;font-size:13px;}";
+  html += "@media(max-width:720px){.grid{grid-template-columns:1fr;}}";
+  html += "</style></head><body>";
+  html += "<div class='card'>";
+  html += "<h2>CLASSIC HOUSE CONTROL</h2>";
   html += "<p>Config: <a href='/config'>/config</a></p>";
+  html += "<h3>Local Control (WiFi)</h3>";
+  html += "<div class='grid'>";
+  html += "<form method='post' action='/local/toggle'><input type='hidden' name='pin' value='12'>";
+  html += "<button class='btn-on' type='submit'>ปิด/เปิด ไฟห้องกินข้าว (D6)</button></form>";
+  html += "<form method='post' action='/local/toggle'><input type='hidden' name='pin' value='14'>";
+  html += "<button class='btn-on' type='submit'>ปิด/เปิด ไฟห้องครัว (D5)</button></form>";
+  html += "<form method='post' action='/local/toggle'><input type='hidden' name='pin' value='13'>";
+  html += "<button class='btn-on' type='submit'>ปิด/เปิด ไฟห้องน้ำ (D7)</button></form>";
+  html += "<form method='post' action='/local/kettle'>";
+  html += "<button class='btn-warn' type='submit'>เปิดกาต้มน้ำ 2.30 นาที (D2)</button></form>";
+  html += "</div>";
   html += "<h3>Runtime</h3>";
   html += "<p><strong>Device ID:</strong> ";
   html += htmlEscape(config.deviceId);
@@ -297,12 +380,48 @@ String renderPage() {
   html += "<p><strong>Expire URL (example):</strong> ";
   html += htmlEscape(buildApiUrl(String("/api/devices/") + config.deviceId + "/pins/4/expire"));
   html += "</p>";
-  html += "</body></html>";
+  html += "</div></body></html>";
   return html;
 }
 
 void handleRoot() {
   server.send(200, "text/html", renderPage());
+}
+
+void handleLocalToggle() {
+  if (!server.hasArg("pin")) {
+    server.send(400, "text/plain", "Missing pin");
+    return;
+  }
+
+  int pinNumber = server.arg("pin").toInt();
+  int idx = pinIndexFromNumber(pinNumber);
+  if (idx < 0) {
+    server.send(400, "text/plain", "Invalid pin");
+    return;
+  }
+
+  bool nextOn = !pinOn[idx];
+  durationMinutes[idx] = 0;
+  timerState[idx] = false;
+  timers[idx + 1].cancel();
+  writePin((uint8_t)idx, nextOn);
+  postLocalState();
+  server.sendHeader("Location", "/");
+  server.send(303);
+}
+
+void handleLocalKettle() {
+  const uint8_t idx = 1; // D2
+  durationMinutes[idx] = 0;
+  timerState[idx] = false;
+  timers[idx + 1].cancel();
+  writePin(idx, true);
+  postLocalState();
+  localTimer.cancel();
+  localTimer.in(150000, handleLocalKettleExpired);
+  server.sendHeader("Location", "/");
+  server.send(303);
 }
 
 void handleConfigGet() {
@@ -376,6 +495,8 @@ void setupOta() {
 
 void setupWebServer() {
   server.on("/", HTTP_GET, handleRoot);
+  server.on("/local/toggle", HTTP_POST, handleLocalToggle);
+  server.on("/local/kettle", HTTP_POST, handleLocalKettle);
   server.on("/config", HTTP_GET, handleConfigGet);
   server.on("/config", HTTP_POST, handleConfigPost);
   server.onNotFound(handleNotFound);
@@ -409,4 +530,5 @@ void loop() {
   ArduinoOTA.handle();
   server.handleClient();
   for (auto& t : timers) t.tick();
+  localTimer.tick();
 }
