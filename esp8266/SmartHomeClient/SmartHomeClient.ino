@@ -356,7 +356,7 @@ const char ROOT_PAGE_TEMPLATE[] PROGMEM =
   ".row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}"
   ".row-label{font-weight:700;color:#1b1b1b;}"
   ".row-actions{display:flex;gap:8px;flex-wrap:wrap;}"
-  "button{border:none;border-radius:7px;padding:7px 10px;font-weight:700;cursor:pointer;width:110px;}"
+  "button{border:none;border-radius:7px;padding:5px 5px;font-weight:700;cursor:pointer;min-width:80px;}"
   ".btn-on{background:#0a9f6f;color:#fff;}"
   ".btn-off{background:#e0e0e0;color:#222;}"
   ".btn-warn{background:#ffb74d;color:#1b1b1b;}"
@@ -370,31 +370,30 @@ const char ROOT_PAGE_TEMPLATE[] PROGMEM =
   "<svg viewBox='0 0 24 24' role='img' aria-hidden='true'>"
   "<path d='M19.14 12.94c.04-.31.06-.63.06-.94s-.02-.63-.06-.94l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.38 7.38 0 0 0-1.63-.94l-.36-2.54a.5.5 0 0 0-.5-.42h-3.84a.5.5 0 0 0-.5.42l-.36 2.54c-.58.23-1.12.54-1.63.94l-2.39-.96a.5.5 0 0 0-.6.22L2.71 8.84a.5.5 0 0 0 .12.64l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94L2.83 14.52a.5.5 0 0 0-.12.64l1.92 3.32c.13.22.4.31.6.22l2.39-.96c.5.4 1.05.72 1.63.94l.36 2.54c.04.24.25.42.5.42h3.84c.25 0 .46-.18.5-.42l.36-2.54c.58-.23 1.12-.54 1.63-.94l2.39.96c.23.09.48 0 .6-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58ZM12 15.5A3.5 3.5 0 1 1 12 8a3.5 3.5 0 0 1 0 7.5Z'/>"
   "</svg></a></div>"
-  "<h3>Local Control (WiFi)</h3>"
   "<div class='rows'>"
-  "<div class='row'><div class='row-label'>Dining Light (D6)</div><div class='row-actions'>"
+  "<div class='row'><div class='row-label'>Dining Light</div><div class='row-actions'>"
   "<form method='post' action='/local/toggle'><input type='hidden' name='pin' value='12'><input type='hidden' name='state' value='1'>"
-  "<button class='btn-on' type='submit' {{D6_ON_DISABLED}}>ON</button></form>"
+  "<button class='{{D6_ON_CLASS}}' type='submit' {{D6_ON_DISABLED}}>ON</button></form>"
   "<form method='post' action='/local/toggle'><input type='hidden' name='pin' value='12'><input type='hidden' name='state' value='0'>"
-  "<button class='btn-off' type='submit' {{D6_OFF_DISABLED}}>OFF</button></form>"
+  "<button class='{{D6_OFF_CLASS}}' type='submit' {{D6_OFF_DISABLED}}>OFF</button></form>"
   "</div></div>"
-  "<div class='row'><div class='row-label'>Kitchen Light (D5)</div><div class='row-actions'>"
+  "<div class='row'><div class='row-label'>Kitchen Light</div><div class='row-actions'>"
   "<form method='post' action='/local/toggle'><input type='hidden' name='pin' value='14'><input type='hidden' name='state' value='1'>"
-  "<button class='btn-on' type='submit' {{D5_ON_DISABLED}}>ON</button></form>"
+  "<button class='{{D5_ON_CLASS}}' type='submit' {{D5_ON_DISABLED}}>ON</button></form>"
   "<form method='post' action='/local/toggle'><input type='hidden' name='pin' value='14'><input type='hidden' name='state' value='0'>"
-  "<button class='btn-off' type='submit' {{D5_OFF_DISABLED}}>OFF</button></form>"
+  "<button class='{{D5_OFF_CLASS}}' type='submit' {{D5_OFF_DISABLED}}>OFF</button></form>"
   "</div></div>"
-  "<div class='row'><div class='row-label'>Bathroom Light (D7)</div><div class='row-actions'>"
+  "<div class='row'><div class='row-label'>Bathroom Light</div><div class='row-actions'>"
   "<form method='post' action='/local/toggle'><input type='hidden' name='pin' value='13'><input type='hidden' name='state' value='1'>"
-  "<button class='btn-on' type='submit' {{D7_ON_DISABLED}}>ON</button></form>"
+  "<button class='{{D7_ON_CLASS}}' type='submit' {{D7_ON_DISABLED}}>ON</button></form>"
   "<form method='post' action='/local/toggle'><input type='hidden' name='pin' value='13'><input type='hidden' name='state' value='0'>"
-  "<button class='btn-off' type='submit' {{D7_OFF_DISABLED}}>OFF</button></form>"
+  "<button class='{{D7_OFF_CLASS}}' type='submit' {{D7_OFF_DISABLED}}>OFF</button></form>"
   "</div></div>"
-  "<div class='row'><div class='row-label'>Kettle (D2) 2.30 min</div><div class='row-actions'>"
+  "<div class='row'><div class='row-label'>Kettle(2:30)</div><div class='row-actions'>"
   "<form method='post' action='/local/kettle'>"
-  "<button class='btn-warn' type='submit' {{D2_ON_DISABLED}}>ON</button></form>"
+  "<button class='{{D2_ON_CLASS}}' type='submit' {{D2_ON_DISABLED}}>ON</button></form>"
   "<form method='post' action='/local/toggle'><input type='hidden' name='pin' value='4'><input type='hidden' name='state' value='0'>"
-  "<button class='btn-off' type='submit' {{D2_OFF_DISABLED}}>OFF</button></form>"
+  "<button class='{{D2_OFF_CLASS}}' type='submit' {{D2_OFF_DISABLED}}>OFF</button></form>"
   "</div></div>"
   "</div><h3>Runtime</h3>"
   "<p><strong>Device ID:</strong> {{DEVICE_ID}}</p>"
@@ -413,6 +412,14 @@ String renderRootPageTemplate() {
   String d7Off = pinOn[4] ? "" : "disabled";
   String d2On = pinOn[1] ? "disabled" : "";
   String d2Off = pinOn[1] ? "" : "disabled";
+  String d6OnClass = pinOn[3] ? "btn-off" : "btn-on";
+  String d6OffClass = pinOn[3] ? "btn-on" : "btn-off";
+  String d5OnClass = pinOn[2] ? "btn-off" : "btn-on";
+  String d5OffClass = pinOn[2] ? "btn-on" : "btn-off";
+  String d7OnClass = pinOn[4] ? "btn-off" : "btn-on";
+  String d7OffClass = pinOn[4] ? "btn-on" : "btn-off";
+  String d2OnClass = pinOn[1] ? "btn-off" : "btn-warn";
+  String d2OffClass = pinOn[1] ? "btn-warn" : "btn-off";
   html.replace("{{D6_ON_DISABLED}}", d6On);
   html.replace("{{D6_OFF_DISABLED}}", d6Off);
   html.replace("{{D5_ON_DISABLED}}", d5On);
@@ -421,6 +428,14 @@ String renderRootPageTemplate() {
   html.replace("{{D7_OFF_DISABLED}}", d7Off);
   html.replace("{{D2_ON_DISABLED}}", d2On);
   html.replace("{{D2_OFF_DISABLED}}", d2Off);
+  html.replace("{{D6_ON_CLASS}}", d6OnClass);
+  html.replace("{{D6_OFF_CLASS}}", d6OffClass);
+  html.replace("{{D5_ON_CLASS}}", d5OnClass);
+  html.replace("{{D5_OFF_CLASS}}", d5OffClass);
+  html.replace("{{D7_ON_CLASS}}", d7OnClass);
+  html.replace("{{D7_OFF_CLASS}}", d7OffClass);
+  html.replace("{{D2_ON_CLASS}}", d2OnClass);
+  html.replace("{{D2_OFF_CLASS}}", d2OffClass);
   html.replace("{{DEVICE_ID}}", htmlEscape(config.deviceId));
   html.replace("{{API_BASE}}", htmlEscape(config.apiBaseUrl));
   html.replace("{{POLLING_URL}}", htmlEscape(buildApiUrl(String("/api/devices/") + config.deviceId + "/state/raw")));
@@ -579,6 +594,3 @@ void loop() {
   for (auto& t : timers) t.tick();
   localTimer.tick();
 }
-
-
-
