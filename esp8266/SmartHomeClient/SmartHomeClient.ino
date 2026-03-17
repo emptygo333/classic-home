@@ -15,7 +15,7 @@ const char* DEFAULT_DEVICE_ID = "esp8266-001";
 const char* DEFAULT_API_BASE_URL = "https://your-app.onrender.com";
 
 const bool RELAY_ACTIVE_LOW = true;
-const unsigned long API_POLL_INTERVAL_MS = 2000;
+const unsigned long API_POLL_INTERVAL_MS = 2500;
 const bool USE_STATIC_IP = true;
 IPAddress STATIC_IP(192, 168, 1, 200);
 IPAddress STATIC_GATEWAY(192, 168, 1, 1);
@@ -353,10 +353,10 @@ const char ROOT_PAGE_TEMPLATE[] PROGMEM =
   ".gear-link{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;"
   "border-radius:10px;background:#f0f3f5;border:1px solid #d6dde2;text-decoration:none;}"
   ".gear-link svg{width:18px;height:18px;fill:#0d5f57;}"
-  ".row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}"
-  ".row-label{font-weight:700;color:#1b1b1b;}"
-  ".row-actions{display:flex;gap:8px;flex-wrap:wrap;}"
-  "button{border:none;border-radius:7px;padding:5px 5px;font-weight:700;cursor:pointer;min-width:80px;}"
+  ".row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}"
+  ".row-label{font-weight:700;color:#1b1b1b;min-width:40%}"
+  ".row-actions{display:flex;gap:8px;flex-wrap:wrap;min-width:25%}"
+  "button{border:none;border-radius:7px;padding:5px 5px;font-weight:700;cursor:pointer;min-width:70px;}"
   ".btn-on{background:#0a9f6f;color:#fff;}"
   ".btn-off{background:#e0e0e0;color:#222;}"
   ".btn-warn{background:#ffb74d;color:#1b1b1b;}"
@@ -371,19 +371,19 @@ const char ROOT_PAGE_TEMPLATE[] PROGMEM =
   "<path d='M19.14 12.94c.04-.31.06-.63.06-.94s-.02-.63-.06-.94l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.38 7.38 0 0 0-1.63-.94l-.36-2.54a.5.5 0 0 0-.5-.42h-3.84a.5.5 0 0 0-.5.42l-.36 2.54c-.58.23-1.12.54-1.63.94l-2.39-.96a.5.5 0 0 0-.6.22L2.71 8.84a.5.5 0 0 0 .12.64l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94L2.83 14.52a.5.5 0 0 0-.12.64l1.92 3.32c.13.22.4.31.6.22l2.39-.96c.5.4 1.05.72 1.63.94l.36 2.54c.04.24.25.42.5.42h3.84c.25 0 .46-.18.5-.42l.36-2.54c.58-.23 1.12-.54 1.63-.94l2.39.96c.23.09.48 0 .6-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58ZM12 15.5A3.5 3.5 0 1 1 12 8a3.5 3.5 0 0 1 0 7.5Z'/>"
   "</svg></a></div>"
   "<div class='rows'>"
-  "<div class='row'><div class='row-label'>Dining Light</div><div class='row-actions'>"
+  "<div class='row'><div class='row-label'>Dining</div><div class='row-actions'>"
   "<form method='post' action='/local/toggle'><input type='hidden' name='pin' value='12'><input type='hidden' name='state' value='1'>"
   "<button class='{{D6_ON_CLASS}}' type='submit' {{D6_ON_DISABLED}}>ON</button></form>"
   "<form method='post' action='/local/toggle'><input type='hidden' name='pin' value='12'><input type='hidden' name='state' value='0'>"
   "<button class='{{D6_OFF_CLASS}}' type='submit' {{D6_OFF_DISABLED}}>OFF</button></form>"
   "</div></div>"
-  "<div class='row'><div class='row-label'>Kitchen Light</div><div class='row-actions'>"
+  "<div class='row'><div class='row-label'>Kitchen</div><div class='row-actions'>"
   "<form method='post' action='/local/toggle'><input type='hidden' name='pin' value='14'><input type='hidden' name='state' value='1'>"
   "<button class='{{D5_ON_CLASS}}' type='submit' {{D5_ON_DISABLED}}>ON</button></form>"
   "<form method='post' action='/local/toggle'><input type='hidden' name='pin' value='14'><input type='hidden' name='state' value='0'>"
   "<button class='{{D5_OFF_CLASS}}' type='submit' {{D5_OFF_DISABLED}}>OFF</button></form>"
   "</div></div>"
-  "<div class='row'><div class='row-label'>Bathroom Light</div><div class='row-actions'>"
+  "<div class='row'><div class='row-label'>Bathroom</div><div class='row-actions'>"
   "<form method='post' action='/local/toggle'><input type='hidden' name='pin' value='13'><input type='hidden' name='state' value='1'>"
   "<button class='{{D7_ON_CLASS}}' type='submit' {{D7_ON_DISABLED}}>ON</button></form>"
   "<form method='post' action='/local/toggle'><input type='hidden' name='pin' value='13'><input type='hidden' name='state' value='0'>"
@@ -395,12 +395,13 @@ const char ROOT_PAGE_TEMPLATE[] PROGMEM =
   "<form method='post' action='/local/toggle'><input type='hidden' name='pin' value='4'><input type='hidden' name='state' value='0'>"
   "<button class='{{D2_OFF_CLASS}}' type='submit' {{D2_OFF_DISABLED}}>OFF</button></form>"
   "</div></div>"
-  "</div><h3>Runtime</h3>"
+  "<div style='color:white; width:100%; height:25%;'>.</div>"
+  "<h3>Runtime</h3>"
   "<p><strong>Device ID:</strong> {{DEVICE_ID}}</p>"
   "<p><strong>API Base URL:</strong> {{API_BASE}}</p>"
   "<p><strong>Polling URL:</strong> {{POLLING_URL}}</p>"
   "<p><strong>Expire URL (example):</strong> {{EXPIRE_URL}}</p>"
-  "</div></body></html>";
+  "</body></html>";
 
 String renderRootPageTemplate() {
   String html = FPSTR(ROOT_PAGE_TEMPLATE);

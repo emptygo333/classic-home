@@ -28,7 +28,7 @@ body {
 
 .header {
   background: linear-gradient(125deg, #0b5148, #0f7b6c 56%, #13a179);
-  border-radius: 18px;
+  border-radius: 7px;
   color: #fff;
   padding: 18px 20px;
   box-shadow: 0 8px 22px rgba(8, 76, 64, 0.2);
@@ -52,7 +52,7 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.45);
   color: #fff;
   background: transparent;
-  border-radius: 8px;
+  border-radius: 7px;
   padding: 6px 10px;
   text-decoration: none;
   cursor: pointer;
@@ -78,7 +78,7 @@ body {
 .group-card {
   background: var(--card);
   border: 1px solid var(--line);
-  border-radius: 14px;
+  border-radius: 7px;
   padding: 14px;
   box-shadow: 0 6px 16px rgba(17, 35, 54, 0.06);
 }
@@ -102,7 +102,7 @@ body {
 }
 
 .dx-btn-host .dx-button {
-  border-radius: 10px;
+  border-radius: 7px;
 }
 
 .input-wrap {
@@ -162,7 +162,7 @@ body {
   width: 100%;
   padding: 10px 12px;
   border: 1px solid var(--line);
-  border-radius: 10px;
+  border-radius: 7px;
   font-family: inherit;
   background: #fff;
 }
@@ -174,7 +174,7 @@ body {
 
 .toolbar button {
   border: none;
-  border-radius: 10px;
+  border-radius: 7px;
   padding: 10px 12px;
   cursor: pointer;
   background: #50b24a;
@@ -200,14 +200,14 @@ body {
   align-items: center;
   padding: 12px 14px;
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: 7px;
   background: #fff;
 }
 
 .time-pill {
   background: #e7f2ff;
   color: #1d5fd6;
-  border-radius: 10px;
+  border-radius: 7px;
   padding: 8px 10px;
   font-weight: 700;
   text-align: center;
@@ -216,7 +216,7 @@ body {
 .device-badge {
   display: inline-block;
   padding: 3px 8px;
-  border-radius: 8px;
+  border-radius: 7px;
   background: #f0f0f0;
   color: #333;
   font-size: 12px;
@@ -249,7 +249,7 @@ body {
 .btn-edit,
 .btn-delete {
   border: none;
-  border-radius: 8px;
+  border-radius: 7px;
   padding: 8px 10px;
   cursor: pointer;
 }
