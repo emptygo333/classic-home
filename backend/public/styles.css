@@ -105,6 +105,10 @@ body {
   border-radius: 7px;
 }
 
+.dx-input-host {
+  min-width: 45px;
+}
+
 .input-wrap {
   display: inline-flex;
   gap: 8px;
@@ -117,10 +121,6 @@ body {
   font-size: 14px;
   color: var(--muted);
   white-space: nowrap;
-}
-
-.dx-input-host {
-  min-width: 100px;
 }
 
 @media (max-width: 720px) {

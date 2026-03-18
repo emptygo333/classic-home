@@ -129,7 +129,7 @@ function createInputDiv(div) {
     .dxTextBox({
       value: div.options?.input?.defaultValue ?? "",
       placeholder: div.options?.input?.placeholder || "Enter value",
-      width: 220
+      width: 80
     })
     .dxTextBox("instance");
 
